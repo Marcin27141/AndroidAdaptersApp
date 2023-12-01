@@ -18,7 +18,7 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="?attr/actionBarSize"
                 app:navigationIcon="@drawable/example_icon"
                 android:id="@+id/mytoolbar"
                 >
@@ -30,6 +30,7 @@
         <androidx.fragment.app.FragmentContainerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
             android:name="androidx.navigation.fragment.NavHostFragment"
             app:navGraph="@navigation/nav_graph"
             app:defaultNavHost="true"
