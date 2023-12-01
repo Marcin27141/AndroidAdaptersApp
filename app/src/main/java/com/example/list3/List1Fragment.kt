@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.ListView
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.list3.databinding.FragmentList1Binding
@@ -40,9 +41,32 @@ class List1Fragment : Fragment() {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val view = super.getView(position, convertView, parent)
+            val layout: RelativeLayout = view.findViewById(R.id.itemLayout)
 
-//            val checkBox: CheckBox = view.findViewById(R.id.checkBox)
-//            checkBox.isChecked = checkedStates[position]
+            val checkBox: CheckBox = view.findViewById(R.id.checkBox)
+
+            layout.setOnClickListener { view ->
+                checkBox.isChecked = !checkBox.isChecked
+            }
+
+            checkBox.setOnCheckedChangeListener { _, checked ->
+                checkedStates[position] = checked
+                var anyChecked = false;
+                var text = "Clicked " + position
+                for (i in checkedStates.indices) {
+                    if (checkedStates[i]) {
+                        if (!anyChecked) {
+                            text = text + " : Checked"
+                            anyChecked = true
+                        }
+                        text += " " + i
+                    }
+                }
+                if (!anyChecked)
+                    text = text + " : No items checked"
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+            }
+
             return view
         }
     }
@@ -68,21 +92,8 @@ class List1Fragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         listView = binding.listView
-        val adapter = ArrayAdapter(requireContext(), R.layout.simple_list_item, R.id.listItemText,  listData)
+        val adapter = CustomArrayAdapter(requireContext(), listData)
         listView.adapter = adapter
-        val onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            var text = "Clicked " + position + " : Checked"
-            val checklist : SparseBooleanArray = listView.checkedItemPositions
-            for (i in 0 until checklist.size()) {
-                if (checklist.valueAt(i)) {
-                    val index = checklist.keyAt(i)
-                    text += " " + index.toString()
-                }
-            }
-            Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
-        }
-        listView.onItemClickListener = onItemClickListener
-
     }
 
 
