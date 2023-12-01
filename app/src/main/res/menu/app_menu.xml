@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="First"
+        android:id="@+id/first"
+        android:icon="@drawable/example_icon"
+        app:showAsAction="always|withText">
+    </item>
+    <item
+        android:title="Second"
+        android:id="@+id/second"
+        android:icon="@drawable/example_icon"
+        app:showAsAction="always|withText">
+    </item>
+</menu>

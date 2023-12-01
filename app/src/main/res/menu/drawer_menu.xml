@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="Main screen"
+        android:id="@+id/mainScreen"
+        android:icon="@mipmap/ic_launcher">
+    </item>
+    <item
+        android:title="Simple list"
+        android:id="@+id/simpleList"
+        android:icon="@mipmap/ic_launcher">
+    </item>
+    <item
+        android:title="RecyclerView list"
+        android:id="@+id/recyclerViewList"
+        android:icon="@mipmap/ic_launcher"/>
+    <item
+        android:title="Swipe/Tabs"
+        android:id="@+id/swipeAndTabs"
+        android:icon="@mipmap/ic_launcher"/>
+</menu>

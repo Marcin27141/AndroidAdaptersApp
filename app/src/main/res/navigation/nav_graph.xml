@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainScreen">
+
+<!--    <action-->
+<!--        android:id="@+id/action_global_to_primary"-->
+<!--        app:destination="@id/mainScreen"-->
+<!--        app:launchSingleTop="true"/>-->
+
+<!--    <action-->
+<!--        android:id="@+id/action_global_to_simple_list"-->
+<!--        app:destination="@id/simpleList"-->
+<!--        app:popUpTo="@id/mainScreen"-->
+<!--        app:launchSingleTop="true"/>-->
+
+<!--    <action-->
+<!--        android:id="@+id/action_global_to_recycler_view"-->
+<!--        app:destination="@id/recyclerViewList"-->
+<!--        app:popUpTo="@id/mainScreen"-->
+<!--        app:launchSingleTop="true"/>-->
+
+<!--    <action-->
+<!--        android:id="@+id/action_global_to_swipe"-->
+<!--        app:destination="@id/swipeAndTabs"-->
+<!--        app:popUpTo="@id/mainScreen"-->
+<!--        app:launchSingleTop="true"/>-->
+
+    <fragment
+        android:id="@+id/simpleList"
+        android:name="com.example.list3.List1Fragment"
+        android:label="Simple list"
+        tools:layout="@layout/fragment_list1" >
+        <action
+            android:id="@+id/action_simpleList_to_mainScreen"
+            app:destination="@id/mainScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/recyclerViewList"
+        android:name="com.example.list3.List2Fragment"
+        android:label="RecyclerView"
+        tools:layout="@layout/fragment_list2" />
+    <fragment
+        android:id="@+id/mainScreen"
+        android:name="com.example.list3.PrimaryFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_primary" >
+        <action
+            android:id="@+id/action_mainScreen_to_simpleList"
+            app:destination="@id/simpleList" />
+    </fragment>
+    <fragment
+        android:id="@+id/swipeAndTabs"
+        android:name="com.example.list3.SwipeFragment"
+        android:label="Swipe"
+        tools:layout="@layout/fragment_swipe" />
+</navigation>
