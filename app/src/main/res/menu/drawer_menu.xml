@@ -3,19 +3,19 @@
     <item
         android:title="Main screen"
         android:id="@+id/mainScreen"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@drawable/one_icon">
     </item>
     <item
         android:title="Simple list"
         android:id="@+id/simpleList"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@drawable/two_icon">
     </item>
     <item
         android:title="RecyclerView list"
         android:id="@+id/recyclerViewList"
-        android:icon="@mipmap/ic_launcher"/>
+        android:icon="@drawable/three_icon"/>
     <item
         android:title="Swipe/Tabs"
         android:id="@+id/swipeAndTabs"
-        android:icon="@mipmap/ic_launcher"/>
+        android:icon="@drawable/four_icon"/>
 </menu>

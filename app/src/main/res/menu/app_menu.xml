@@ -13,4 +13,10 @@
         android:icon="@drawable/example_icon"
         app:showAsAction="always|withText">
     </item>
+    <item
+        android:title="Third"
+        android:id="@+id/third"
+        android:icon="@drawable/example_icon"
+        app:showAsAction="always|withText">
+    </item>
 </menu>

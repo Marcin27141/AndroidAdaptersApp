@@ -28,10 +28,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         setSupportActionBar(binding.mytoolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.insideNavigationView
+        navView.itemIconTintList = null;
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.navContainer) as NavHostFragment
         val navController = navHostFragment.navController
 
