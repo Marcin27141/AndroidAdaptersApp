@@ -5,12 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.list3.databinding.AnimalItemBinding
 import com.example.list3.databinding.ComplexListItemBinding
 import com.example.list3.databinding.FragmentList1Binding
 import com.example.list3.databinding.FragmentList2Binding
@@ -53,23 +53,22 @@ class List2Fragment : Fragment() {
 
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = MyAdapter(dataRepo.getComplexData())
+        val adapter = MyAdapter(dataRepo.getAnimalsData())
         recyclerView.adapter = adapter
 
     }
 
-    inner class MyAdapter(var data: MutableList<DataItem>) :
+    inner class MyAdapter(var data: MutableList<AnimalItem>) :
         RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
-            inner class MyViewHolder(viewBinding : ComplexListItemBinding) :
+            inner class MyViewHolder(viewBinding : AnimalItemBinding) :
                     RecyclerView.ViewHolder(viewBinding.root) {
-                        val title: TextView = viewBinding.itemTitle
-                        val subtitle: TextView = viewBinding.itemSubtitle
+                        val title: TextView = viewBinding.animalName
+                        val subtitle: TextView = viewBinding.latinName
                         val icon: ImageView = viewBinding.itemIcon
-                        val checkBox: CheckBox = viewBinding.checkBox
                     }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-            val viewBinding = ComplexListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val viewBinding = AnimalItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return MyViewHolder(viewBinding)
         }
 
@@ -78,56 +77,31 @@ class List2Fragment : Fragment() {
         }
 
         private fun sunItemIcon(holder: MyViewHolder, position: Int) {
-            when (data[position].item_type) {
-                false -> holder.icon.setImageResource(R.drawable.airplane_icon)
-                true -> holder.icon.setImageResource(R.drawable.bus_icon)
+            when (data[position].animalType) {
+                AnimalItem.AnimalType.BIRD -> holder.icon.setImageResource(R.drawable.bird_icon)
+                AnimalItem.AnimalType.PREDATOR -> holder.icon.setImageResource(R.drawable.predator_icon)
+                AnimalItem.AnimalType.INSECT -> holder.icon.setImageResource(R.drawable.insect_icon)
+                AnimalItem.AnimalType.RODENT -> holder.icon.setImageResource(R.drawable.rodent_icon)
             }
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-            holder.title.text = data[position].text_main
-            holder.subtitle.text = data[position].text2
-            holder.checkBox.isChecked = data[position].item_checked
+            holder.title.text = data[position].name
+            holder.subtitle.text = data[position].latinName
             sunItemIcon(holder, position)
 
             holder.itemView.setOnClickListener {
-                Toast.makeText(requireContext(), "You clicked " + (position+1), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), data[position].name, Toast.LENGTH_SHORT).show()
             }
 
-            holder.itemView.setOnLongClickListener {
-                if (dataRepo.deleteComplexItem(position)) {
-                    notifyItemRemoved(position)
-                    notifyItemRangeChanged(position, itemCount);
-                }
-                true
-            }
-
-            holder.checkBox.setOnClickListener { v ->
-                data[position].item_checked = (v as CheckBox).isChecked
-                Toast.makeText(requireContext(), "Selected/Unselected: " + (position + 1), Toast.LENGTH_SHORT).show()
-            }
-
+//            holder.itemView.setOnLongClickListener {
+//                if (dataRepo.deleteComplexItem(position)) {
+//                    notifyItemRemoved(position)
+//                    notifyItemRangeChanged(position, itemCount);
+//                }
+//                true
+//            }
         }
 
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment List2Fragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            List2Fragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
