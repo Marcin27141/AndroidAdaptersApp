@@ -5,6 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.list3.databinding.ComplexListItemBinding
+import com.example.list3.databinding.FragmentList1Binding
+import com.example.list3.databinding.FragmentList2Binding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,6 +29,8 @@ class List2Fragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    val dataRepo = DataRepo.getInstance()
+    private lateinit var binding: FragmentList2Binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +44,63 @@ class List2Fragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list2, container, false)
+        binding = FragmentList2Binding.inflate(inflater, container, false);
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val recyclerView: RecyclerView = binding.recyclerView
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = MyAdapter(dataRepo.getComplexData())
+        recyclerView.adapter = adapter
+
+    }
+
+    inner class MyAdapter(var data: MutableList<DataItem>) :
+        RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+            inner class MyViewHolder(viewBinding : ComplexListItemBinding) :
+                    RecyclerView.ViewHolder(viewBinding.root) {
+                        val title: TextView = viewBinding.itemTitle
+                        val subtitle: TextView = viewBinding.itemSubtitle
+                        val icon: ImageView = viewBinding.itemIcon
+                        val checkBox: CheckBox = viewBinding.checkBox
+                    }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+            val viewBinding = ComplexListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return MyViewHolder(viewBinding)
+        }
+
+        override fun getItemCount(): Int {
+            return data.size
+        }
+
+        private fun sunItemIcon(holder: MyViewHolder, position: Int) {
+            when (data[position].item_type) {
+                false -> holder.icon.setImageResource(R.drawable.airplane_icon)
+                true -> holder.icon.setImageResource(R.drawable.bus_icon)
+            }
+        }
+
+        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+            holder.title.text = data[position].text_main
+            holder.subtitle.text = data[position].text2
+            holder.checkBox.isChecked = data[position].item_checked
+            sunItemIcon(holder, position)
+
+            holder.itemView.setOnClickListener {
+                Toast.makeText(requireContext(), "You clicked " + (position+1), Toast.LENGTH_SHORT).show()
+            }
+
+            holder.checkBox.setOnClickListener { v ->
+                data[position].item_checked = (v as CheckBox).isChecked
+                Toast.makeText(requireContext(), "Selected/Unselected: " + (position + 1), Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
     }
 
     companion object {
