@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:title="Main screen"
-        android:id="@+id/mainScreen"
-        android:icon="@drawable/one_icon">
-    </item>
-    <item
-        android:title="Simple list"
-        android:id="@+id/simpleList"
-        android:icon="@drawable/two_icon">
-    </item>
-    <item
-        android:title="RecyclerView list"
-        android:id="@+id/recyclerViewList"
-        android:icon="@drawable/three_icon"/>
-    <item
-        android:title="Swipe/Tabs"
-        android:id="@+id/swipeAndTabs"
-        android:icon="@drawable/four_icon"/>
+    <group android:checkableBehavior="single">
+        <item
+            android:title="Main screen"
+            android:id="@+id/mainScreen"
+            android:icon="@drawable/one_icon">
+        </item>
+        <item
+            android:title="Simple list"
+            android:id="@+id/simpleList"
+            android:icon="@drawable/two_icon">
+        </item>
+        <item
+            android:title="RecyclerView list"
+            android:id="@+id/recyclerViewList"
+            android:icon="@drawable/three_icon"/>
+        <item
+            android:title="Swipe/Tabs"
+            android:id="@+id/swipeAndTabs"
+            android:icon="@drawable/four_icon"/>
+    </group>
 </menu>
