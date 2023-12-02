@@ -1,10 +1,20 @@
 package com.example.list3
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.widget.ViewPager2
+import com.example.list3.databinding.FragmentList2Binding
+import com.example.list3.databinding.FragmentSwipeBinding
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.android.material.tabs.TabLayoutMediator
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,6 +30,7 @@ class SwipeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var binding: FragmentSwipeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +45,20 @@ class SwipeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_swipe, container, false)
-    }
+        binding = FragmentSwipeBinding.inflate(inflater, container, false);
+
+        val viewPagerAdapter = MyPagerAdapter2(requireActivity())
+        val viewPager = binding.viewPager
+        viewPager.adapter = viewPagerAdapter
+        TabLayoutMediator(binding.tabLayout, viewPager
+        ) { tab, position ->
+            tab.text = "Tab ${(position + 1)}"
+            tab.setIcon(viewPagerAdapter.TAB_ICONS[position])
+        }.attach()
+
+        return binding.root
+        }
+
 
     companion object {
         /**
