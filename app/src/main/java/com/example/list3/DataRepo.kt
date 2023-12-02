@@ -22,8 +22,13 @@ class DataRepo {
         complexDataList.add(item)
     }
 
-    fun deleteComplexItem(item: DataItem) {
-        complexDataList.remove(item)
+    fun deleteComplexItem(position: Int) : Boolean {
+        return try {
+            complexDataList.removeAt(position)
+            true
+        } catch (e: IndexOutOfBoundsException) {
+            false
+        }
     }
 
     init {

@@ -94,6 +94,14 @@ class List2Fragment : Fragment() {
                 Toast.makeText(requireContext(), "You clicked " + (position+1), Toast.LENGTH_SHORT).show()
             }
 
+            holder.itemView.setOnLongClickListener {
+                if (dataRepo.deleteComplexItem(position)) {
+                    notifyItemRemoved(position)
+                    notifyItemRangeChanged(position, itemCount);
+                }
+                true
+            }
+
             holder.checkBox.setOnClickListener { v ->
                 data[position].item_checked = (v as CheckBox).isChecked
                 Toast.makeText(requireContext(), "Selected/Unselected: " + (position + 1), Toast.LENGTH_SHORT).show()
