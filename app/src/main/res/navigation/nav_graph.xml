@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_recyclerViewList_to_animalDetails"
             app:destination="@id/animalDetails" />
+        <action
+            android:id="@+id/action_recyclerViewList_to_addAnimalFragment"
+            app:destination="@id/addAnimalFragment" />
     </fragment>
     <fragment
         android:id="@+id/mainScreen"
@@ -72,4 +75,9 @@
         android:name="com.example.list3.AnimalDetails"
         android:label="Details"
         tools:layout="@layout/fragment_animal_details" />
+    <fragment
+        android:id="@+id/addAnimalFragment"
+        android:name="com.example.list3.AddAnimalFragment"
+        android:label="Create"
+        tools:layout="@layout/fragment_add_animal" />
 </navigation>

@@ -15,6 +15,7 @@ import com.example.list3.databinding.AnimalItemBinding
 import com.example.list3.databinding.ComplexListItemBinding
 import com.example.list3.databinding.FragmentList1Binding
 import com.example.list3.databinding.FragmentList2Binding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,6 +56,19 @@ class List2Fragment : Fragment() {
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         val adapter = MyAdapter(dataRepo.getAnimalsData())
+
+        val floatingButton: FloatingActionButton = binding.FAB
+        floatingButton.setOnClickListener {
+            findNavController().navigate(R.id.action_recyclerViewList_to_addAnimalFragment)
+        }
+
+        parentFragmentManager.setFragmentResultListener("valueFromChildEx", viewLifecycleOwner) {
+                _, bundle ->
+            val result = bundle.getBoolean("addedItem")
+            if (result)
+                adapter.refreshList()
+        }
+
         recyclerView.adapter = adapter
 
     }
@@ -71,6 +85,11 @@ class List2Fragment : Fragment() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             val viewBinding = AnimalItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return MyViewHolder(viewBinding)
+        }
+
+        fun refreshList() {
+            data = DataRepo.getInstance().getAnimalsData()
+            notifyDataSetChanged()
         }
 
         override fun getItemCount(): Int {
