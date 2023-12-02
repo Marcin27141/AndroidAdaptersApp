@@ -42,7 +42,11 @@
         android:id="@+id/recyclerViewList"
         android:name="com.example.list3.List2Fragment"
         android:label="RecyclerView"
-        tools:layout="@layout/fragment_list2" />
+        tools:layout="@layout/fragment_list2" >
+        <action
+            android:id="@+id/action_recyclerViewList_to_animalDetails"
+            app:destination="@id/animalDetails" />
+    </fragment>
     <fragment
         android:id="@+id/mainScreen"
         android:name="com.example.list3.PrimaryFragment"
@@ -63,4 +67,9 @@
         android:name="com.example.list3.SwipeFragment"
         android:label="Swipe"
         tools:layout="@layout/fragment_swipe" />
+    <fragment
+        android:id="@+id/animalDetails"
+        android:name="com.example.list3.AnimalDetails"
+        android:label="Details"
+        tools:layout="@layout/fragment_animal_details" />
 </navigation>

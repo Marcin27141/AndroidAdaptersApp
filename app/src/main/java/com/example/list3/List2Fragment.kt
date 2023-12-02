@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.list3.databinding.AnimalItemBinding
@@ -77,12 +78,7 @@ class List2Fragment : Fragment() {
         }
 
         private fun sunItemIcon(holder: MyViewHolder, position: Int) {
-            when (data[position].animalType) {
-                AnimalItem.AnimalType.BIRD -> holder.icon.setImageResource(R.drawable.bird_icon)
-                AnimalItem.AnimalType.PREDATOR -> holder.icon.setImageResource(R.drawable.predator_icon)
-                AnimalItem.AnimalType.INSECT -> holder.icon.setImageResource(R.drawable.insect_icon)
-                AnimalItem.AnimalType.RODENT -> holder.icon.setImageResource(R.drawable.rodent_icon)
-            }
+            holder.icon.setImageResource(AnimalItem.getAnimalIconId(data[position]))
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -91,7 +87,11 @@ class List2Fragment : Fragment() {
             sunItemIcon(holder, position)
 
             holder.itemView.setOnClickListener {
-                Toast.makeText(requireContext(), data[position].name, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(), data[position].name, Toast.LENGTH_SHORT).show()
+                val bundle = Bundle().apply {
+                    putSerializable("animalItem", data[position])
+                }
+                findNavController().navigate(R.id.action_recyclerViewList_to_animalDetails, bundle)
             }
 
 //            holder.itemView.setOnLongClickListener {
