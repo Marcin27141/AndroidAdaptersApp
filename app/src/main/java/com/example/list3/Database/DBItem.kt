@@ -14,7 +14,7 @@ class DBItem constructor(
     var latinName: String? = null,
     var animalType: AnimalType = AnimalType.BIRD,
     var health: Int = 0,
-    var strength: Int = 0,
+    var strength: Float = 0f,
     var isDeadly: Boolean = false,
 ){
 

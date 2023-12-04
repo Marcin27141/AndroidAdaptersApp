@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import com.example.list3.Database.DBItem
+import com.example.list3.Database.MyRepository
+import com.google.android.material.slider.Slider
 import org.w3c.dom.Text
 
 class AnimalDetails : Fragment() {
@@ -22,22 +25,32 @@ class AnimalDetails : Fragment() {
         val latinLabel: TextView = rootview.findViewById(R.id.latinName)
         val animalIcon: ImageView = rootview.findViewById(R.id.animalIcon)
         val animalTypeLabel: TextView = rootview.findViewById(R.id.animalTypeLabel)
-        val healthRating: RatingBar = rootview.findViewById(R.id.healthRating)
+        val healthValue: TextView = rootview.findViewById(R.id.healthValue)
         val strengthRating: RatingBar = rootview.findViewById(R.id.strengthRating)
         val deadlyLabel: TextView = rootview.findViewById(R.id.deadlyLabel)
 
         val arguments = requireArguments()
-        if (arguments.containsKey("animalItem")) {
-            val animalItem = arguments.getSerializable("animalItem") as AnimalItem
+        if (arguments.containsKey("animalItemId")) {
+            val animalItemId = arguments.getInt("animalItemId")
+            val animalItem = MyRepository.getInstance(requireContext()).getAnimalById(animalItemId)
             nameLabel.text = animalItem.name
             latinLabel.text = animalItem.latinName
-            animalIcon.setImageResource(AnimalItem.getAnimalIconId(animalItem))
+            animalIcon.setImageResource(getIconSrc(animalItem))
             animalTypeLabel.text = animalItem.animalType.toString()
-            healthRating.rating = animalItem.health.toFloat()
-            strengthRating.rating = animalItem.strength.toFloat()
+            healthValue.text = animalItem.health.toString()
+            strengthRating.rating = animalItem.strength
             deadlyLabel.text = if (animalItem.isDeadly) "This is a deadly animal" else "This animal is not deadly"
         }
 
         return rootview
+    }
+
+    private fun getIconSrc(animal: DBItem) : Int {
+        return when (animal.animalType) {
+            DBItem.AnimalType.BIRD -> R.drawable.bird_icon
+            DBItem.AnimalType.PREDATOR -> R.drawable.predator_icon
+            DBItem.AnimalType.INSECT -> R.drawable.insect_icon
+            DBItem.AnimalType.RODENT -> R.drawable.rodent_icon
+        }
     }
 }

@@ -11,6 +11,10 @@ interface MyDao {
     @Query("SELECT * FROM animals ORDER BY id ASC")
     fun getAllAnimals(): MutableList<DBItem>
 
+
+    @Query("SELECT * FROM animals WHERE id = :id")
+    fun getAnimalById(id: Int): DBItem
+
     @Query("DELETE FROM animals")
     fun deleteAll()
 

@@ -113,11 +113,10 @@ class List2Fragment : Fragment() {
             sunItemIcon(holder, position)
 
             holder.itemView.setOnClickListener {
-                //Toast.makeText(requireContext(), data[position].name, Toast.LENGTH_SHORT).show()
-//                val bundle = Bundle().apply {
-//                    putSerializable("animalItem", data[position])
-//                }
-//                findNavController().navigate(R.id.action_recyclerViewList_to_animalDetails, bundle)
+                val bundle = Bundle().apply {
+                    putInt("animalItemId", data[position].id)
+                }
+                findNavController().navigate(R.id.action_recyclerViewList_to_animalDetails, bundle)
             }
 
             holder.itemView.setOnLongClickListener {

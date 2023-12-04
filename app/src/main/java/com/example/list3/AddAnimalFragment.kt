@@ -20,6 +20,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.findFragment
 import com.example.list3.Database.DBItem
 import com.example.list3.Database.MyRepository
+import com.google.android.material.slider.Slider
 
 class AddAnimalFragment : Fragment() {
     class FormsNotFilledException(message: String) : Exception(message)
@@ -32,7 +33,7 @@ class AddAnimalFragment : Fragment() {
         val nameEdit: EditText = rootview.findViewById(R.id.nameEdit)
         val latinEdit: EditText = rootview.findViewById(R.id.latinEdit)
         val radioGroup: RadioGroup = rootview.findViewById(R.id.radioGroup)
-        val healthRating: RatingBar = rootview.findViewById(R.id.healthRating)
+        val healthSlider: Slider = rootview.findViewById(R.id.healthSlider)
         val strengthRating: RatingBar = rootview.findViewById(R.id.strengthRating)
         val isDeadlyCheckbox: CheckBox = rootview.findViewById(R.id.isDeadly)
         val saveButton: Button = rootview.findViewById(R.id.saveButton)
@@ -48,7 +49,7 @@ class AddAnimalFragment : Fragment() {
                 val latin = getLatinFromEdit(latinEdit)
                 val animalType = getTypeFromRadioGroup(radioGroup)
                 val animal = DBItem(
-                    0, name, latin, animalType, healthRating.rating.toInt(), strengthRating.rating.toInt(), isDeadlyCheckbox.isChecked
+                    0, name, latin, animalType, healthSlider.value.toInt(), strengthRating.rating, isDeadlyCheckbox.isChecked
                 )
 
                 if (MyRepository.getInstance(requireContext()).addAnimal(animal))

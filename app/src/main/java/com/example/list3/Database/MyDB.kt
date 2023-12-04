@@ -6,7 +6,7 @@ import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [DBItem::class], version = 1)
+@Database(entities = [DBItem::class], version = 2)
 abstract class MyDB: RoomDatabase() {
     abstract fun myDao(): MyDao?
     companion object {
@@ -18,6 +18,7 @@ abstract class MyDB: RoomDatabase() {
                     context.applicationContext,
                     MyDB::class.java,
                     "animals_database")
+                    .fallbackToDestructiveMigration()
                     .allowMainThreadQueries()
                     .build()
             }
