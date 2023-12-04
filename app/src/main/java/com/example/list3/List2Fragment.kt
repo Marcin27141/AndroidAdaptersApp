@@ -70,6 +70,10 @@ class List2Fragment : Fragment() {
                 _, _ -> adapter.refreshList()
         }
 
+        parentFragmentManager.setFragmentResultListener("item_modified", viewLifecycleOwner) {
+                _, _ -> adapter.refreshList()
+        }
+
         recyclerView.adapter = adapter
 
     }

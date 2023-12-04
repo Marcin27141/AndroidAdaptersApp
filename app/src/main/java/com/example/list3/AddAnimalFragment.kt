@@ -23,6 +23,12 @@ import com.example.list3.Database.MyRepository
 import com.google.android.material.slider.Slider
 
 class AddAnimalFragment : Fragment() {
+    private lateinit var nameEdit: EditText
+    private lateinit var latinEdit: EditText
+    private lateinit var radioGroup: RadioGroup
+    private lateinit var healthSlider: Slider
+    private lateinit var strengthRating: RatingBar
+    private lateinit var isDeadlyCheckbox: CheckBox
     class FormsNotFilledException(message: String) : Exception(message)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,38 +36,73 @@ class AddAnimalFragment : Fragment() {
     ): View? {
         val rootview =  inflater.inflate(R.layout.fragment_add_animal, container, false)
 
-        val nameEdit: EditText = rootview.findViewById(R.id.nameEdit)
-        val latinEdit: EditText = rootview.findViewById(R.id.latinEdit)
-        val radioGroup: RadioGroup = rootview.findViewById(R.id.radioGroup)
-        val healthSlider: Slider = rootview.findViewById(R.id.healthSlider)
-        val strengthRating: RatingBar = rootview.findViewById(R.id.strengthRating)
-        val isDeadlyCheckbox: CheckBox = rootview.findViewById(R.id.isDeadly)
+        nameEdit = rootview.findViewById(R.id.nameEdit)
+        latinEdit = rootview.findViewById(R.id.latinEdit)
+        radioGroup = rootview.findViewById(R.id.radioGroup)
+        healthSlider = rootview.findViewById(R.id.healthSlider)
+        strengthRating = rootview.findViewById(R.id.strengthRating)
+        isDeadlyCheckbox = rootview.findViewById(R.id.isDeadly)
         val saveButton: Button = rootview.findViewById(R.id.saveButton)
         val cancelButton: Button = rootview.findViewById(R.id.cancelButton)
+
+        val arguments = getArguments()
+        if (arguments != null && arguments.containsKey("animalItemId")) {
+            val animalItemId = arguments.getInt("animalItemId")
+            val animalItem = MyRepository.getInstance(requireContext()).getAnimalById(animalItemId)!!
+
+            nameEdit.setText(animalItem.name)
+            latinEdit.setText(animalItem.latinName)
+            radioGroup.check(getRadioFromAnimal(animalItem))
+            healthSlider.value = animalItem.health.toFloat()
+            strengthRating.rating = animalItem.strength
+            isDeadlyCheckbox.isChecked = animalItem.isDeadly
+
+            saveButton.setOnClickListener {
+                try {
+                    val animal = tryGetAnimal()
+                    animal.id = animalItemId
+
+                    val repo = MyRepository.getInstance(requireContext())
+
+                    repo.deleteAnimal(animalItem)
+                    repo.addAnimal(animal)
+                    parentFragmentManager.setFragmentResult("item_modified", Bundle.EMPTY)
+                    requireActivity().onBackPressed()
+
+                } catch (ex: FormsNotFilledException) {
+                    showErrors(requireActivity(), ex.message!!)
+                }
+            }
+        }
+        else {
+            saveButton.setOnClickListener {
+                try {
+                    val animal = tryGetAnimal()
+
+                    if (MyRepository.getInstance(requireContext()).addAnimal(animal))
+                        parentFragmentManager.setFragmentResult("item_added", Bundle.EMPTY)
+                    requireActivity().onBackPressed()
+
+                } catch (ex: FormsNotFilledException) {
+                    showErrors(requireActivity(), ex.message!!)
+                }
+            }
+        }
 
         cancelButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
 
-        saveButton.setOnClickListener {
-            try {
-                val name = getNameFromEdit(nameEdit)
-                val latin = getLatinFromEdit(latinEdit)
-                val animalType = getTypeFromRadioGroup(radioGroup)
-                val animal = DBItem(
-                    0, name, latin, animalType, healthSlider.value.toInt(), strengthRating.rating, isDeadlyCheckbox.isChecked
-                )
-
-                if (MyRepository.getInstance(requireContext()).addAnimal(animal))
-                    parentFragmentManager.setFragmentResult("item_added", Bundle.EMPTY)
-                requireActivity().onBackPressed()
-
-            } catch (ex: FormsNotFilledException) {
-                showErrors(requireActivity(), ex.message!!)
-            }
-        }
-
         return rootview
+    }
+
+    private fun tryGetAnimal(): DBItem {
+        val name = getNameFromEdit(nameEdit)
+        val latin = getLatinFromEdit(latinEdit)
+        val animalType = getTypeFromRadioGroup(radioGroup)
+        return DBItem(
+            0, name, latin, animalType, healthSlider.value.toInt(), strengthRating.rating, isDeadlyCheckbox.isChecked
+        )
     }
 
     private fun getNameFromEdit(nameEdit: EditText): String {
@@ -83,6 +124,15 @@ class AddAnimalFragment : Fragment() {
             R.id.rodentRadio -> DBItem.AnimalType.RODENT
             R.id.birdRadio -> DBItem.AnimalType.BIRD
             else -> throw FormsNotFilledException("Animal type selection is mandatory")
+        }
+    }
+
+    private fun getRadioFromAnimal(animal: DBItem) : Int {
+        return when (animal.animalType) {
+            DBItem.AnimalType.PREDATOR -> R.id.predatorRadio
+            DBItem.AnimalType.INSECT -> R.id.insectRadio
+            DBItem.AnimalType.RODENT -> R.id.rodentRadio
+            DBItem.AnimalType.BIRD -> R.id.birdRadio
         }
     }
 

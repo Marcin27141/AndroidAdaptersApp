@@ -21,8 +21,12 @@ class MyRepository(context: Context) {
         return myDao.delete(animal) > 0
     }
 
-    fun getAnimalById(id: Int) : DBItem {
+    fun getAnimalById(id: Int) : DBItem? {
         return myDao.getAnimalById(id)
+    }
+
+    suspend fun updateAnimal(animal: DBItem) {
+        return myDao.updateAnimal(animal)
     }
 
 

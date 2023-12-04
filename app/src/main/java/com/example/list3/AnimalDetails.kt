@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.navigation.fragment.findNavController
 import com.example.list3.Database.DBItem
 import com.example.list3.Database.MyRepository
 import com.google.android.material.slider.Slider
@@ -32,7 +34,7 @@ class AnimalDetails : Fragment() {
         val arguments = requireArguments()
         if (arguments.containsKey("animalItemId")) {
             val animalItemId = arguments.getInt("animalItemId")
-            val animalItem = MyRepository.getInstance(requireContext()).getAnimalById(animalItemId)
+            val animalItem = MyRepository.getInstance(requireContext()).getAnimalById(animalItemId)!!
             nameLabel.text = animalItem.name
             latinLabel.text = animalItem.latinName
             animalIcon.setImageResource(getIconSrc(animalItem))
@@ -40,6 +42,20 @@ class AnimalDetails : Fragment() {
             healthValue.text = animalItem.health.toString()
             strengthRating.rating = animalItem.strength
             deadlyLabel.text = if (animalItem.isDeadly) "This is a deadly animal" else "This animal is not deadly"
+
+            val backButton : Button = rootview.findViewById(R.id.backButton)
+            val modifyButton : Button = rootview.findViewById(R.id.modifyButton)
+
+            backButton.setOnClickListener {
+                requireActivity().onBackPressed()
+            }
+
+            modifyButton.setOnClickListener {
+                val bundle = Bundle().apply {
+                    putInt("animalItemId", animalItemId)
+                }
+                findNavController().navigate(R.id.action_animalDetails_to_addAnimalFragment, bundle)
+            }
         }
 
         return rootview

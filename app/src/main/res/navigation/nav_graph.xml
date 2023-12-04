@@ -69,7 +69,11 @@
         android:id="@+id/animalDetails"
         android:name="com.example.list3.AnimalDetails"
         android:label="Details"
-        tools:layout="@layout/fragment_animal_details" />
+        tools:layout="@layout/fragment_animal_details" >
+        <action
+            android:id="@+id/action_animalDetails_to_addAnimalFragment"
+            app:destination="@id/addAnimalFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addAnimalFragment"
         android:name="com.example.list3.AddAnimalFragment"

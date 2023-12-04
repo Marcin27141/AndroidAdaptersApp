@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface MyDao {
@@ -23,4 +24,7 @@ interface MyDao {
 
     @Delete
     fun delete(animal: DBItem) : Int
+
+    @Update
+    suspend fun updateAnimal(animal: DBItem)
 }
