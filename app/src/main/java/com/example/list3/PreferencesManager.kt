@@ -27,4 +27,16 @@ class PreferencesManager {
         editor.putString("authorInfo", authorInfo)
         editor.apply()
     }
+
+    fun setHomeIcon(iconSrc: Int, activity: Activity) {
+        val data: SharedPreferences = activity.getSharedPreferences(DEFAULT_PREFS_NAME, Context.MODE_PRIVATE)
+        val editor = data.edit()
+        editor.putInt("iconSrc", iconSrc)
+        editor.apply()
+    }
+
+    fun getHomeIcon(activity: Activity) : Int {
+        val data: SharedPreferences = activity.getSharedPreferences(DEFAULT_PREFS_NAME, Context.MODE_PRIVATE)
+        return data.getInt("iconSrc", -1)
+    }
 }

@@ -66,11 +66,6 @@
 <!--            app:popUpTo="@id/mainScreen"/>-->
     </fragment>
     <fragment
-        android:id="@+id/swipeAndTabs"
-        android:name="com.example.list3.SwipeFragment"
-        android:label="Swipe"
-        tools:layout="@layout/fragment_swipe" />
-    <fragment
         android:id="@+id/animalDetails"
         android:name="com.example.list3.AnimalDetails"
         android:label="Details"
@@ -80,4 +75,16 @@
         android:name="com.example.list3.AddAnimalFragment"
         android:label="Create"
         tools:layout="@layout/fragment_add_animal" />
+
+<!--    pick one for tests-->
+<!--    <fragment-->
+<!--        android:id="@+id/swipeAndTabs"-->
+<!--        android:name="com.example.list3.SwipeFragment"-->
+<!--        android:label="Swipe"-->
+<!--        tools:layout="@layout/fragment_swipe" />-->
+    <fragment
+        android:id="@+id/swipeAndTabs"
+        android:name="com.example.list3.SetImageFragment"
+        android:label="Icon"
+        tools:layout="@layout/fragment_set_image" />
 </navigation>

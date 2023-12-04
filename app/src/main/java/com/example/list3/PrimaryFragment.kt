@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import com.example.list3.databinding.FragmentPrimaryBinding
@@ -17,6 +18,7 @@ class PrimaryFragment : Fragment() {
     private lateinit var binding: FragmentPrimaryBinding
     private lateinit var titleLabel: TextView
     private lateinit var authorLabel: TextView
+    private lateinit var iconView: ImageView
     private lateinit var preferencesManager: PreferencesManager
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,12 +28,15 @@ class PrimaryFragment : Fragment() {
 
         titleLabel = binding.textHome
         authorLabel = binding.authorInfo
+        iconView = binding.iconView
 
         preferencesManager = PreferencesManager.getInstance()
         setInitialInfos(titleLabel.text.toString(), authorLabel.text.toString(), requireActivity())
         val initialValues = preferencesManager.getTitleAndAuthor(requireActivity())
+        val initialIcon = preferencesManager.getHomeIcon(requireActivity())
         titleLabel.text = initialValues.first
         authorLabel.text = initialValues.second
+        iconView.setImageResource(initialIcon)
 
 //        requireActivity().supportFragmentManager.setFragmentResultListener("invitationInfo", viewLifecycleOwner) {
 //                _, bundle ->
@@ -49,7 +54,9 @@ class PrimaryFragment : Fragment() {
         @JvmStatic
         fun setInitialInfos(title: String, author: String, activity: FragmentActivity) {
             if (!wasInitialized) {
-                PreferencesManager.getInstance().setHomeInfo(title, author, activity)
+                val preferencesManager = PreferencesManager.getInstance();
+                preferencesManager.setHomeInfo(title, author, activity)
+                preferencesManager.setHomeIcon(R.drawable.bird_icon, activity)
                 wasInitialized = true
             }
         }
