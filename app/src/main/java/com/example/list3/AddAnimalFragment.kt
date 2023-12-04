@@ -18,6 +18,8 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.findFragment
+import com.example.list3.Database.DBItem
+import com.example.list3.Database.MyRepository
 
 class AddAnimalFragment : Fragment() {
     class FormsNotFilledException(message: String) : Exception(message)
@@ -45,13 +47,12 @@ class AddAnimalFragment : Fragment() {
                 val name = getNameFromEdit(nameEdit)
                 val latin = getLatinFromEdit(latinEdit)
                 val animalType = getTypeFromRadioGroup(radioGroup)
-                val animal = AnimalItem(
-                    name, latin, animalType, healthRating.rating.toInt(), strengthRating.rating.toInt(), isDeadlyCheckbox.isChecked
+                val animal = DBItem(
+                    0, name, latin, animalType, healthRating.rating.toInt(), strengthRating.rating.toInt(), isDeadlyCheckbox.isChecked
                 )
-                DataRepo.getInstance().addAnimalItem(animal)
-                parentFragmentManager.setFragmentResult("valueFromChildEx",
-                    bundleOf("addedItem" to true)
-                )
+
+                if (MyRepository.getInstance(requireContext()).addAnimal(animal))
+                    parentFragmentManager.setFragmentResult("item_added", Bundle.EMPTY)
                 requireActivity().onBackPressed()
 
             } catch (ex: FormsNotFilledException) {
@@ -74,12 +75,12 @@ class AddAnimalFragment : Fragment() {
     }
 
 
-    private fun getTypeFromRadioGroup(radioGroup: RadioGroup) : AnimalItem.AnimalType {
+    private fun getTypeFromRadioGroup(radioGroup: RadioGroup) : DBItem.AnimalType {
         return when (radioGroup.checkedRadioButtonId) {
-            R.id.predatorRadio -> AnimalItem.AnimalType.PREDATOR
-            R.id.insectRadio -> AnimalItem.AnimalType.INSECT
-            R.id.rodentRadio -> AnimalItem.AnimalType.RODENT
-            R.id.birdRadio -> AnimalItem.AnimalType.BIRD
+            R.id.predatorRadio -> DBItem.AnimalType.PREDATOR
+            R.id.insectRadio -> DBItem.AnimalType.INSECT
+            R.id.rodentRadio -> DBItem.AnimalType.RODENT
+            R.id.birdRadio -> DBItem.AnimalType.BIRD
             else -> throw FormsNotFilledException("Animal type selection is mandatory")
         }
     }

@@ -11,6 +11,8 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.list3.Database.DBItem
+import com.example.list3.Database.MyRepository
 import com.example.list3.databinding.AnimalItemBinding
 import com.example.list3.databinding.ComplexListItemBinding
 import com.example.list3.databinding.FragmentList1Binding
@@ -31,7 +33,7 @@ class List2Fragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    val dataRepo = DataRepo.getInstance()
+    private lateinit var dataRepo: MyRepository
     private lateinit var binding: FragmentList2Binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +42,8 @@ class List2Fragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        dataRepo = MyRepository.getInstance(requireContext())
     }
 
     override fun onCreateView(
@@ -55,25 +59,22 @@ class List2Fragment : Fragment() {
 
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = MyAdapter(dataRepo.getAnimalsData())
+        val adapter = MyAdapter(dataRepo.getAnimals()!!)
 
         val floatingButton: FloatingActionButton = binding.FAB
         floatingButton.setOnClickListener {
             findNavController().navigate(R.id.action_recyclerViewList_to_addAnimalFragment)
         }
 
-        parentFragmentManager.setFragmentResultListener("valueFromChildEx", viewLifecycleOwner) {
-                _, bundle ->
-            val result = bundle.getBoolean("addedItem")
-            if (result)
-                adapter.refreshList()
+        parentFragmentManager.setFragmentResultListener("item_added", viewLifecycleOwner) {
+                _, _ -> adapter.refreshList()
         }
 
         recyclerView.adapter = adapter
 
     }
 
-    inner class MyAdapter(var data: MutableList<AnimalItem>) :
+    inner class MyAdapter(var data: MutableList<DBItem>) :
         RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
             inner class MyViewHolder(viewBinding : AnimalItemBinding) :
                     RecyclerView.ViewHolder(viewBinding.root) {
@@ -88,7 +89,7 @@ class List2Fragment : Fragment() {
         }
 
         fun refreshList() {
-            data = DataRepo.getInstance().getAnimalsData()
+            data = dataRepo.getAnimals()!!
             notifyDataSetChanged()
         }
 
@@ -97,7 +98,13 @@ class List2Fragment : Fragment() {
         }
 
         private fun sunItemIcon(holder: MyViewHolder, position: Int) {
-            holder.icon.setImageResource(AnimalItem.getAnimalIconId(data[position]))
+            val iconSrc = when (data[position].animalType) {
+                DBItem.AnimalType.BIRD -> R.drawable.bird_icon
+                DBItem.AnimalType.PREDATOR -> R.drawable.predator_icon
+                DBItem.AnimalType.INSECT -> R.drawable.insect_icon
+                DBItem.AnimalType.RODENT -> R.drawable.rodent_icon
+            }
+            holder.icon.setImageResource(iconSrc)
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -107,19 +114,19 @@ class List2Fragment : Fragment() {
 
             holder.itemView.setOnClickListener {
                 //Toast.makeText(requireContext(), data[position].name, Toast.LENGTH_SHORT).show()
-                val bundle = Bundle().apply {
-                    putSerializable("animalItem", data[position])
-                }
-                findNavController().navigate(R.id.action_recyclerViewList_to_animalDetails, bundle)
+//                val bundle = Bundle().apply {
+//                    putSerializable("animalItem", data[position])
+//                }
+//                findNavController().navigate(R.id.action_recyclerViewList_to_animalDetails, bundle)
             }
 
-//            holder.itemView.setOnLongClickListener {
-//                if (dataRepo.deleteComplexItem(position)) {
-//                    notifyItemRemoved(position)
-//                    notifyItemRangeChanged(position, itemCount);
-//                }
-//                true
-//            }
+            holder.itemView.setOnLongClickListener {
+                if (dataRepo.deleteAnimal(data[position])) {
+                    data = dataRepo.getAnimals()!!
+                    notifyDataSetChanged()
+                }
+                true
+            }
         }
 
     }
