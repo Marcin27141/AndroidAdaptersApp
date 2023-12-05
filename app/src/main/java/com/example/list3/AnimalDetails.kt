@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RadioGroup
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
@@ -16,6 +19,13 @@ import com.google.android.material.slider.Slider
 import org.w3c.dom.Text
 
 class AnimalDetails : Fragment() {
+    private lateinit var nameLabel: TextView
+    private lateinit var latinLabel: TextView
+    private lateinit var animalIcon: ImageView
+    private lateinit var animalTypeLabel: TextView
+    private lateinit var healthValue: TextView
+    private lateinit var strengthRating: RatingBar
+    private lateinit var deadlyLabel: TextView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -23,32 +33,28 @@ class AnimalDetails : Fragment() {
         // Inflate the layout for this fragment
         val rootview = inflater.inflate(R.layout.fragment_animal_details, container, false)
 
-        val nameLabel: TextView = rootview.findViewById(R.id.name)
-        val latinLabel: TextView = rootview.findViewById(R.id.latinName)
-        val animalIcon: ImageView = rootview.findViewById(R.id.animalIcon)
-        val animalTypeLabel: TextView = rootview.findViewById(R.id.animalTypeLabel)
-        val healthValue: TextView = rootview.findViewById(R.id.healthValue)
-        val strengthRating: RatingBar = rootview.findViewById(R.id.strengthRating)
-        val deadlyLabel: TextView = rootview.findViewById(R.id.deadlyLabel)
+        nameLabel = rootview.findViewById(R.id.name)
+        latinLabel = rootview.findViewById(R.id.latinName)
+        animalIcon = rootview.findViewById(R.id.animalIcon)
+        animalTypeLabel = rootview.findViewById(R.id.animalTypeLabel)
+        healthValue = rootview.findViewById(R.id.healthValue)
+        strengthRating = rootview.findViewById(R.id.strengthRating)
+        deadlyLabel = rootview.findViewById(R.id.deadlyLabel)
+
+        val backButton : Button = rootview.findViewById(R.id.backButton)
+        val modifyButton : Button = rootview.findViewById(R.id.modifyButton)
+
+        backButton.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
 
         val arguments = requireArguments()
         if (arguments.containsKey("animalItemId")) {
             val animalItemId = arguments.getInt("animalItemId")
             val animalItem = MyRepository.getInstance(requireContext()).getAnimalById(animalItemId)!!
-            nameLabel.text = animalItem.name
-            latinLabel.text = animalItem.latinName
-            animalIcon.setImageResource(getIconSrc(animalItem))
-            animalTypeLabel.text = animalItem.animalType.toString()
-            healthValue.text = animalItem.health.toString()
-            strengthRating.rating = animalItem.strength
-            deadlyLabel.text = if (animalItem.isDeadly) "This is a deadly animal" else "This animal is not deadly"
+            setInputsForAnimal(animalItem)
 
-            val backButton : Button = rootview.findViewById(R.id.backButton)
-            val modifyButton : Button = rootview.findViewById(R.id.modifyButton)
 
-            backButton.setOnClickListener {
-                requireActivity().onBackPressed()
-            }
 
             modifyButton.setOnClickListener {
                 val bundle = Bundle().apply {
@@ -56,9 +62,28 @@ class AnimalDetails : Fragment() {
                 }
                 findNavController().navigate(R.id.action_animalDetails_to_addAnimalFragment, bundle)
             }
+
+            parentFragmentManager.setFragmentResultListener("item_modified", viewLifecycleOwner) {
+                _, bundle ->
+                    val updatedAnimalId = bundle.getInt("animalItemId")
+                    if (updatedAnimalId == animalItemId) {
+                        val updatedAnimal = MyRepository.getInstance(requireContext()).getAnimalById(updatedAnimalId)!!
+                        setInputsForAnimal(updatedAnimal)
+                    }
+            }
         }
 
         return rootview
+    }
+
+    private fun setInputsForAnimal(animalItem: DBItem) {
+        nameLabel.setText(animalItem.name)
+        latinLabel.setText(animalItem.latinName)
+        animalIcon.setImageResource(getIconSrc(animalItem))
+        animalTypeLabel.text = animalItem.animalType.toString()
+        healthValue.text = animalItem.health.toString()
+        strengthRating.rating = animalItem.strength
+        deadlyLabel.text = if (animalItem.isDeadly) "This is a deadly animal" else "This animal is not deadly"
     }
 
     private fun getIconSrc(animal: DBItem) : Int {

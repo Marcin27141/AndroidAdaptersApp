@@ -66,7 +66,9 @@ class AddAnimalFragment : Fragment() {
 
                     repo.deleteAnimal(animalItem)
                     repo.addAnimal(animal)
-                    parentFragmentManager.setFragmentResult("item_modified", Bundle.EMPTY)
+                    parentFragmentManager.setFragmentResult("item_modified",
+                        bundleOf("animalItemId" to animalItemId)
+                    )
                     requireActivity().onBackPressed()
 
                 } catch (ex: FormsNotFilledException) {
