@@ -64,8 +64,7 @@ class AddAnimalFragment : Fragment() {
 
                     val repo = MyRepository.getInstance(requireContext())
 
-                    repo.deleteAnimal(animalItem)
-                    repo.addAnimal(animal)
+                    repo.updateAnimal(animalItem.id, animal)
                     parentFragmentManager.setFragmentResult("item_modified",
                         bundleOf("animalItemId" to animalItemId)
                     )

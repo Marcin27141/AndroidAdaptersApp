@@ -1,23 +1,26 @@
 package com.example.list3
 
+import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.list3.Database.DBItem
 import com.example.list3.Database.MyRepository
 import com.example.list3.databinding.AnimalItemBinding
-import com.example.list3.databinding.ComplexListItemBinding
-import com.example.list3.databinding.FragmentList1Binding
 import com.example.list3.databinding.FragmentList2Binding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -74,6 +77,11 @@ class List2Fragment : Fragment() {
                 _, _ -> adapter.refreshList()
         }
 
+        val dividerItemDecoration = DividerItemDecoration(requireActivity(), RecyclerView.VERTICAL)
+        ResourcesCompat.getDrawable(resources, R.drawable.animal_border_decorator, null)
+            ?.let { drawable -> dividerItemDecoration.setDrawable(drawable) }
+        binding.recyclerView.addItemDecoration(dividerItemDecoration)
+
         recyclerView.adapter = adapter
 
     }
@@ -115,6 +123,7 @@ class List2Fragment : Fragment() {
             holder.title.text = data[position].name
             holder.subtitle.text = data[position].latinName
             sunItemIcon(holder, position)
+            holder.title.setTextColor(if (data[position].isDeadly) resources.getColor(R.color.red) else resources.getColor(R.color.green))
 
             holder.itemView.setOnClickListener {
                 val bundle = Bundle().apply {
@@ -124,13 +133,22 @@ class List2Fragment : Fragment() {
             }
 
             holder.itemView.setOnLongClickListener {
-                if (dataRepo.deleteAnimal(data[position])) {
-                    data = dataRepo.getAnimals()!!
-                    notifyDataSetChanged()
-                }
+                val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
+                builder
+                    .setTitle("Are you sure?")
+                    .setMessage("You are going to delete " + data[position].name + ". Do you want to continue?")
+                    .setPositiveButton("Yes") { dialog, _ ->
+                        if (dataRepo.deleteAnimal(data[position])) {
+                            data = dataRepo.getAnimals()!!
+                            notifyDataSetChanged()
+                        }
+                    }
+                    .setNegativeButton("No") { dialog, _ ->
+                        dialog.cancel()
+                    }
+                builder.create().show()
                 true
             }
         }
-
     }
 }
