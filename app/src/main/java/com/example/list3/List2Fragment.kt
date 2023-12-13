@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.list3.Database.DBItem
 import com.example.list3.Database.MyRepository
+import com.example.list3.Database.MyViewModel
 import com.example.list3.databinding.AnimalItemBinding
 import com.example.list3.databinding.FragmentList2Binding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -39,6 +41,7 @@ class List2Fragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var dataRepo: MyRepository
+    private lateinit var myVModel: MyViewModel
     private lateinit var binding: FragmentList2Binding
     private lateinit var myAdapter: MyListAdapter
 
@@ -57,6 +60,10 @@ class List2Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentList2Binding.inflate(inflater, container, false);
+
+        val myModel : MyViewModel by activityViewModels { MyViewModel.Factory }
+        myVModel = myModel
+
         return binding.root
     }
 
@@ -65,6 +72,9 @@ class List2Fragment : Fragment() {
 
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+
+
 
         myAdapter = MyListAdapter(onItemAction)
         //val adapter = MyAdapter(dataRepo.getAnimals()!!)
@@ -80,8 +90,10 @@ class List2Fragment : Fragment() {
         binding.recyclerView.addItemDecoration(dividerItemDecoration)
 
 
+
+
         recyclerView.adapter = myAdapter
-        myAdapter.submitList(dataRepo.getAnimals())
+        myAdapter.submitList(myVModel.getAllItems())
 
     }
 
@@ -105,9 +117,9 @@ class List2Fragment : Fragment() {
         when (action) {
             1 -> Toast.makeText(requireContext(), "You clicked: " + item.name, Toast.LENGTH_SHORT).show()
             2 -> {
-                dataRepo.deleteAnimal(item)
+                myVModel.deleteItem(item)
                 Toast.makeText(requireContext(), "Deleted: " + item.name, Toast.LENGTH_SHORT).show()
-                myAdapter.submitList(dataRepo.getAnimals())
+                myAdapter.submitList(myVModel.getAllItems())
             }
         }
     }
