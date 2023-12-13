@@ -1,7 +1,9 @@
 package com.example.list3.Database
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import com.example.list3.AnimalItem
+import kotlinx.coroutines.flow.Flow
 
 class MyRepository(context: Context) {
     private var dataList: MutableList<DBItem>? = null
@@ -11,6 +13,14 @@ class MyRepository(context: Context) {
     fun getAnimals() : MutableList<DBItem>? {
         dataList = myDao.getAllAnimals()
         return dataList
+    }
+
+    fun getAnimalsLive() : LiveData<MutableList<DBItem>> {
+        return myDao.getAllAnimalsLive()
+    }
+
+    fun getAnimalsFlow() : Flow<MutableList<DBItem>> {
+        return myDao.getAllAnimalsFlow()
     }
 
     fun addAnimal(animal: DBItem) : Boolean {

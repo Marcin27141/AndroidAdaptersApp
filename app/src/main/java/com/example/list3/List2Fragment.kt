@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -24,6 +25,8 @@ import com.example.list3.Database.MyViewModel
 import com.example.list3.databinding.AnimalItemBinding
 import com.example.list3.databinding.FragmentList2Binding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -93,7 +96,19 @@ class List2Fragment : Fragment() {
 
 
         recyclerView.adapter = myAdapter
-        myAdapter.submitList(myVModel.getAllItems())
+        //myAdapter.submitList(myVModel.getAllItems())
+
+        //live data
+//        myVModel.getAllItemsLive().observe(viewLifecycleOwner) { datalist ->
+//            myAdapter.submitList(datalist)
+//        }
+
+        //flow
+        lifecycle.coroutineScope.launch {
+            myVModel.getAllItemsFlow().collect() {
+                myAdapter.submitList(it)
+            }
+        }
 
     }
 
@@ -115,11 +130,28 @@ class List2Fragment : Fragment() {
 
     var onItemAction : (animal:DBItem, action:Int) -> Unit = { item, action ->
         when (action) {
-            1 -> Toast.makeText(requireContext(), "You clicked: " + item.name, Toast.LENGTH_SHORT).show()
+            1 ->  {
+                val bundle = Bundle().apply {
+                    putInt("animalItemId", item.id)
+                }
+                findNavController().navigate(R.id.action_recyclerViewList_to_animalDetails, bundle)
+            }
             2 -> {
                 myVModel.deleteItem(item)
                 Toast.makeText(requireContext(), "Deleted: " + item.name, Toast.LENGTH_SHORT).show()
-                myAdapter.submitList(myVModel.getAllItems())
+                //myAdapter.submitList(myVModel.getAllItems())
+
+                //live data
+//                myVModel.getAllItemsLive().observe(viewLifecycleOwner) { datalist ->
+//                    myAdapter.submitList(datalist)
+//                }
+
+                //flow
+                lifecycle.coroutineScope.launch {
+                    myVModel.getAllItemsFlow().collect() {
+                        myAdapter.submitList(it)
+                    }
+                }
             }
         }
     }

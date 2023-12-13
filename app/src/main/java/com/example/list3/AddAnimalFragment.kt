@@ -17,10 +17,13 @@ import android.widget.RadioGroup
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.findFragment
+import androidx.lifecycle.coroutineScope
 import com.example.list3.Database.DBItem
-import com.example.list3.Database.MyRepository
+import com.example.list3.Database.MyViewModel
 import com.google.android.material.slider.Slider
+import kotlinx.coroutines.launch
 
 class AddAnimalFragment : Fragment() {
     private lateinit var nameEdit: EditText
@@ -29,12 +32,16 @@ class AddAnimalFragment : Fragment() {
     private lateinit var healthSlider: Slider
     private lateinit var strengthRating: RatingBar
     private lateinit var isDeadlyCheckbox: CheckBox
+    private lateinit var myVModel : MyViewModel
     class FormsNotFilledException(message: String) : Exception(message)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val rootview =  inflater.inflate(R.layout.fragment_add_animal, container, false)
+
+        val myModel : MyViewModel by activityViewModels { MyViewModel.Factory }
+        myVModel = myModel
 
         nameEdit = rootview.findViewById(R.id.nameEdit)
         latinEdit = rootview.findViewById(R.id.latinEdit)
@@ -48,7 +55,7 @@ class AddAnimalFragment : Fragment() {
         val arguments = getArguments()
         if (arguments != null && arguments.containsKey("animalItemId")) {
             val animalItemId = arguments.getInt("animalItemId")
-            val animalItem = MyRepository.getInstance(requireContext()).getAnimalById(animalItemId)!!
+            val animalItem = myVModel.getAnimalById(animalItemId)!!
 
             nameEdit.setText(animalItem.name)
             latinEdit.setText(animalItem.latinName)
@@ -62,9 +69,7 @@ class AddAnimalFragment : Fragment() {
                     val animal = tryGetAnimal()
                     animal.id = animalItemId
 
-                    val repo = MyRepository.getInstance(requireContext())
-
-                    repo.updateAnimal(animalItem.id, animal)
+                    myVModel.updateAnimal(animalItem.id, animal)
                     parentFragmentManager.setFragmentResult("item_modified",
                         bundleOf("animalItemId" to animalItemId)
                     )
@@ -80,7 +85,7 @@ class AddAnimalFragment : Fragment() {
                 try {
                     val animal = tryGetAnimal()
 
-                    if (MyRepository.getInstance(requireContext()).addAnimal(animal))
+                    if (myVModel.addItem(animal))
                         parentFragmentManager.setFragmentResult("item_added", Bundle.EMPTY)
                     requireActivity().onBackPressed()
 
