@@ -99,5 +99,12 @@
         <action
             android:id="@+id/action_photoListFragment_to_swipeAndTabs"
             app:destination="@id/swipeAndTabs" />
+        <action
+            android:id="@+id/action_photoListFragment_to_takePhotoFragment"
+            app:destination="@id/takePhotoFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/takePhotoFragment"
+        android:name="com.example.list3.TakePhotoFragment"
+        android:label="Take a photo" />
 </navigation>

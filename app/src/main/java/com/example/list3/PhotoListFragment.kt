@@ -45,6 +45,10 @@ class PhotoListFragment : Fragment() {
         val layoutManager = GridLayoutManager(context, 2)
         binding.recyclerView.layoutManager = layoutManager
 
+        binding.takePhotoBtn.setOnClickListener { _ ->
+            lanuchTakePhoto()
+        }
+
         return binding.root
     }
 
@@ -56,11 +60,16 @@ class PhotoListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.cameraMenuItem -> {
-                Toast.makeText(requireContext(), "camera", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(), "camera", Toast.LENGTH_SHORT).show()
+                lanuchTakePhoto()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun lanuchTakePhoto() {
+        findNavController().navigate(R.id.action_photoListFragment_to_takePhotoFragment)
     }
 
     inner class SimplePhotoListAdapter(val appContext: Context, val dataList: MutableList<FileItem>)
