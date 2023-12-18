@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -82,8 +83,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        //menuInflater.inflate(R.menu.app_menu, menu)
+        menuInflater.inflate(R.menu.app_menu, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.externalStorage -> {
+                val result = ImageRepo.getInstance(this).setStorage(ImageRepo.SHARED_STORAGE_ID)
+                if (result) {
+                    recreate()
+                    Toast.makeText(this, "Switched to shared storage", Toast.LENGTH_SHORT).show()
+                }
+                return result
+            }
+            R.id.privateStorage -> {
+                val result = ImageRepo.getInstance(this).setStorage(ImageRepo.APP_STORAGE_ID)
+                if (result) {
+                    recreate()
+                    Toast.makeText(this, "Switched to private app storage", Toast.LENGTH_SHORT).show()
+                }
+                return result
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -3,6 +3,9 @@ package com.example.list3
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -16,6 +19,11 @@ import com.example.list3.databinding.ImageGridViewBinding
 
 class PhotoListFragment : Fragment() {
     private lateinit var binding: FragmentPhotoListBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +46,21 @@ class PhotoListFragment : Fragment() {
         binding.recyclerView.layoutManager = layoutManager
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.camera_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.cameraMenuItem -> {
+                Toast.makeText(requireContext(), "camera", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     inner class SimplePhotoListAdapter(val appContext: Context, val dataList: MutableList<FileItem>)
