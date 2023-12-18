@@ -3,6 +3,7 @@ package com.example.list3
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 
 class PreferencesManager {
     private val DEFAULT_PREFS_NAME = "my_prefs"
@@ -35,8 +36,21 @@ class PreferencesManager {
         editor.apply()
     }
 
+    fun setHomeImage(imageUri: Uri, activity: Activity) {
+        val data: SharedPreferences = activity.getSharedPreferences(DEFAULT_PREFS_NAME, Context.MODE_PRIVATE)
+        val editor = data.edit()
+        editor.putString("imageUri", imageUri.toString())
+        editor.apply()
+    }
+
     fun getHomeIcon(activity: Activity) : Int {
         val data: SharedPreferences = activity.getSharedPreferences(DEFAULT_PREFS_NAME, Context.MODE_PRIVATE)
         return data.getInt("iconSrc", -1)
+    }
+
+    fun getHomeImageUri(activity: Activity) : Uri? {
+        val data: SharedPreferences = activity.getSharedPreferences(DEFAULT_PREFS_NAME, Context.MODE_PRIVATE)
+        val uriString = data.getString("imageUri", null)
+        return if (uriString == null) null else Uri.parse(uriString)
     }
 }

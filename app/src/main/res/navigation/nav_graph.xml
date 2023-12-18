@@ -91,4 +91,13 @@
         android:name="com.example.list3.SetImageFragment"
         android:label="Icon"
         tools:layout="@layout/fragment_set_image" />
+    <fragment
+        android:id="@+id/photoListFragment"
+        android:name="com.example.list3.PhotoListFragment"
+        android:label="Photos"
+        tools:layout="@layout/fragment_photo_list">
+        <action
+            android:id="@+id/action_photoListFragment_to_swipeAndTabs"
+            app:destination="@id/swipeAndTabs" />
+    </fragment>
 </navigation>

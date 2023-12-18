@@ -1,5 +1,7 @@
 package com.example.list3
 
+import android.media.Image
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,6 +12,7 @@ import android.widget.ImageView
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ICON_SRC = "iconSrc"
+private const val FILE_URI = "fileUri"
 
 /**
  * A simple [Fragment] subclass.
@@ -17,12 +20,14 @@ private const val ICON_SRC = "iconSrc"
  * create an instance of this fragment.
  */
 class ShowIconFragment : Fragment() {
-    private var iconSrc: Int = -1
+    private var iconSrc: Int = 0
+    private var fileUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             iconSrc = it.getInt(ICON_SRC)
+            fileUri = it.getParcelable(FILE_URI)
         }
     }
 
@@ -32,9 +37,15 @@ class ShowIconFragment : Fragment() {
     ): View? {
         val rootview =  inflater.inflate(R.layout.fragment_show_icon, container, false)
 
-        if (iconSrc != -1) {
-            val imageView: ImageView = rootview.findViewById(R.id.iconView)
+        val imageView: ImageView = rootview.findViewById(R.id.iconView)
+
+
+        if (iconSrc != 0) {
             imageView.setImageResource(iconSrc)
+        }
+        else if (fileUri != null) {
+            val imageRepo = ImageRepo.getInstance(requireContext())
+            imageView.setImageBitmap(imageRepo.getFileBitmap(fileUri!!))
         }
 
         return rootview
@@ -46,6 +57,14 @@ class ShowIconFragment : Fragment() {
             ShowIconFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ICON_SRC, iconId)
+                }
+            }
+
+        @JvmStatic
+        fun newInstance(file: FileItem) =
+            ShowIconFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(FILE_URI, file.contentUri)
                 }
             }
     }

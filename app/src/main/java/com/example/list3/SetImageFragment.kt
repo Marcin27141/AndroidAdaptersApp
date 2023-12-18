@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.list3.Database.MyRepository
 import com.example.list3.databinding.FragmentSetImageBinding
 import com.example.list3.databinding.FragmentSwipeBinding
 import com.google.android.material.tabs.TabLayoutMediator
@@ -36,15 +37,11 @@ class SetImageFragment : Fragment() {
         viewPager.adapter = adapter
 
 
-
-
-//        val viewPagerAdapter = ImageAdapter(requireActivity())
-
-//        viewPager.adapter = viewPagerAdapter
-//
-//        val initialIcon = PreferencesManager.getInstance().getHomeIcon(requireActivity())
-//        viewPager.setCurrentItem(viewPagerAdapter.getIconTabNumber(initialIcon), false)
-//
+        val arguments = requireArguments()
+        if (arguments.containsKey("startingPosition")) {
+            val startingPosition = arguments.getInt("startingPosition")
+            viewPager.setCurrentItem(startingPosition, false)
+        }
 
         val setButton = binding.setButton
         setButton.setOnClickListener {

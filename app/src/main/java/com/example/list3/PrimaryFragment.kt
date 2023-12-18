@@ -34,9 +34,16 @@ class PrimaryFragment : Fragment() {
         setInitialInfos(titleLabel.text.toString(), authorLabel.text.toString(), requireActivity())
         val initialValues = preferencesManager.getTitleAndAuthor(requireActivity())
         val initialIcon = preferencesManager.getHomeIcon(requireActivity())
+        val imageUri = preferencesManager.getHomeImageUri(requireActivity())
+
+        if (imageUri != null) {
+            iconView.setImageBitmap(ImageRepo.getInstance(requireContext()).getFileBitmap(imageUri, 150, 150))
+        } else {
+            iconView.setImageResource(initialIcon)
+        }
+
         titleLabel.text = initialValues.first
         authorLabel.text = initialValues.second
-        iconView.setImageResource(initialIcon)
 
 //        requireActivity().supportFragmentManager.setFragmentResultListener("invitationInfo", viewLifecycleOwner) {
 //                _, bundle ->

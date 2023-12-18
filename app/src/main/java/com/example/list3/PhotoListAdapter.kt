@@ -39,30 +39,6 @@ class PhotoListAdapter(val appContext: Context, val dataList: MutableList<FileIt
         holder.tv2.text = dataList[position].uriPath
         holder.tv3.text = dataList[position].contentUri?.path
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            dataList[position].contentUri?.let {
-                holder.img.setImageBitmap(appContext.contentResolver.loadThumbnail(it, Size(72,72), null))
-            }
-        } else {
-            holder.img.setImageBitmap(getBitmapFromUri(appContext, dataList[position].contentUri))
-        }
-    }
-
-    private fun getBitmapFromUri(appContext: Context, contentUri: Uri?): Bitmap? {
-        var bitmap: Bitmap? = null
-        try {
-            val image_stream: InputStream
-            try {
-                image_stream = contentUri?.let {
-                    appContext.contentResolver.openInputStream(it)
-                }!!
-                bitmap = BitmapFactory.decodeStream(image_stream)
-            } catch(e: FileNotFoundException) {
-                e.printStackTrace()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return bitmap
+        holder.img.setImageBitmap(ImageRepo.getInstance(appContext).getFileBitmap(dataList[position].contentUri!!))
     }
 }
