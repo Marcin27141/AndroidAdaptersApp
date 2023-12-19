@@ -19,6 +19,7 @@ import com.example.list3.databinding.ImageGridViewBinding
 
 class PhotoListFragment : Fragment() {
     private lateinit var binding: FragmentPhotoListBinding
+    private var isShowingAscending = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +52,14 @@ class PhotoListFragment : Fragment() {
 
         binding.sortingRadioGroup.setOnCheckedChangeListener { _, radio ->
             when (radio) {
-                R.id.radioDateAscending -> adapter?.getSortedImages(false)
-                R.id.radioDateDescending -> adapter?.getSortedImages(true)
+                R.id.radioDateAscending -> {
+                    adapter?.getSortedImages(false)
+                    isShowingAscending = true
+                }
+                R.id.radioDateDescending -> {
+                    adapter?.getSortedImages(true)
+                    isShowingAscending = false
+                }
             }
         }
 
@@ -105,6 +112,7 @@ class PhotoListFragment : Fragment() {
             holder.itemView.setOnClickListener {
                 val bundle = Bundle().apply {
                     putInt("startingPosition", position)
+                    putBoolean("isDescending", !isShowingAscending)
                 }
                 findNavController().navigate(R.id.action_photoListFragment_to_swipeAndTabs, bundle)
             }

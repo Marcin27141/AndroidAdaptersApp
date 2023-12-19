@@ -26,21 +26,33 @@ class SetImageFragment : Fragment() {
         val viewPager = binding.viewPager
 
         val dataRepo = ImageRepo.getInstance(requireContext())
-        val imagesList = dataRepo.getFilesList()
-        val adapter = imagesList?.let {
-            StoredImageAdapter(requireActivity(), it)
-        }
-        if (adapter == null) {
-            Toast.makeText(requireContext(), "Invalid data", Toast.LENGTH_SHORT).show()
-            requireActivity().onBackPressed()
-        }
-        viewPager.adapter = adapter
-
+        var adapter: StoredImageAdapter? = null
 
         val arguments = requireArguments()
         if (arguments.containsKey("startingPosition")) {
             val startingPosition = arguments.getInt("startingPosition")
+            val isDescending = arguments.getBoolean("isDescending", false)
+
+            val imagesList = dataRepo.getFilesList(isDescending)
+            adapter = imagesList?.let {
+                StoredImageAdapter(requireActivity(), it)
+            }
+            if (adapter == null) {
+                Toast.makeText(requireContext(), "Invalid data", Toast.LENGTH_SHORT).show()
+                requireActivity().onBackPressed()
+            }
+            viewPager.adapter = adapter
             viewPager.setCurrentItem(startingPosition, false)
+        } else {
+            val imagesList = dataRepo.getFilesList()
+            val adapter = imagesList?.let {
+                StoredImageAdapter(requireActivity(), it)
+            }
+            if (adapter == null) {
+                Toast.makeText(requireContext(), "Invalid data", Toast.LENGTH_SHORT).show()
+                requireActivity().onBackPressed()
+            }
+            viewPager.adapter = adapter
         }
 
         val setButton = binding.setButton

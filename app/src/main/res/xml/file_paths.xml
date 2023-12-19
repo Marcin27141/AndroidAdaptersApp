@@ -13,4 +13,8 @@
     <external-path
         name="my-external-images"
         path="Pictures/"/>
+
+<!--    <external-path-->
+<!--        name="my-external-camera-images"-->
+<!--        path="DCIM/Camera/"/>-->
 </paths>
