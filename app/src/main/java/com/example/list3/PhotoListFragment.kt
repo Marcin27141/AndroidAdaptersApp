@@ -49,6 +49,13 @@ class PhotoListFragment : Fragment() {
             lanuchTakePhoto()
         }
 
+        binding.sortingRadioGroup.setOnCheckedChangeListener { _, radio ->
+            when (radio) {
+                R.id.radioDateAscending -> adapter?.getSortedImages(false)
+                R.id.radioDateDescending -> adapter?.getSortedImages(true)
+            }
+        }
+
         return binding.root
     }
 
@@ -72,7 +79,7 @@ class PhotoListFragment : Fragment() {
         findNavController().navigate(R.id.action_photoListFragment_to_takePhotoFragment)
     }
 
-    inner class SimplePhotoListAdapter(val appContext: Context, val dataList: MutableList<FileItem>)
+    inner class SimplePhotoListAdapter(val appContext: Context, var dataList: MutableList<FileItem>)
         : RecyclerView.Adapter<SimplePhotoListAdapter.MyViewHolder>(){
         inner class MyViewHolder(viewBinding: ImageGridViewBinding) :
             RecyclerView.ViewHolder(viewBinding.root) {
@@ -81,6 +88,11 @@ class PhotoListFragment : Fragment() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             val viewBinding = ImageGridViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return MyViewHolder(viewBinding)
+        }
+
+        fun getSortedImages(isDescending: Boolean = false) {
+            dataList = ImageRepo.getInstance(requireContext()).getFilesList(isDescending)!!
+            notifyDataSetChanged()
         }
 
         override fun getItemCount(): Int {

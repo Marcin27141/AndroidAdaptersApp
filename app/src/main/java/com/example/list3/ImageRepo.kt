@@ -19,6 +19,7 @@ class ImageRepo {
     lateinit var uri : Uri
 
     private var photo_storage = SHARED_STORAGE_ID
+    private var sortyBy = "${MediaStore.Images.Media.DATE_ADDED}"
 
     fun setStorage(storage: Int) : Boolean {
         if (storage != SHARED_STORAGE_ID && storage != APP_STORAGE_ID)
@@ -29,12 +30,12 @@ class ImageRepo {
 
     fun getStorage(): Int = photo_storage
 
-    fun getSharedList() : MutableList<FileItem>? {
+    fun getSharedList(byDescending: Boolean = false) : MutableList<FileItem>? {
         uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         sharedStoreList?.clear()
 
         val contentResolver: ContentResolver = ctx.contentResolver
-        val cursor = contentResolver.query(uri, null, null, null, null)
+        val cursor = contentResolver.query(uri, null, null, null, sortyBy + " " + if (byDescending) "DESC" else "ASC")
         if (cursor != null && cursor.moveToFirst()) {
             val idColumn = cursor.getColumnIndex(MediaStore.Images.Media._ID)
             val nameColumn = cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
@@ -49,12 +50,14 @@ class ImageRepo {
 
         return sharedStoreList
     }
-    fun getAppList(): MutableList<FileItem>? {
+    fun getAppList(byDescending: Boolean = false): MutableList<FileItem>? {
         val dir: File? = ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         appStoreList?.clear()
 
         if (dir?.isDirectory == true) {
-            var fileList = dir.listFiles()
+            val fileList = dir.listFiles()
+            if (byDescending)
+                fileList?.sortByDescending { it.lastModified() }
             if (fileList != null) {
                 for (file in fileList) {
                     var fileName = file.name
@@ -69,10 +72,10 @@ class ImageRepo {
         return appStoreList
     }
 
-    fun getFilesList() : MutableList<FileItem>? {
+    fun getFilesList(dateDescending: Boolean = false) : MutableList<FileItem>? {
         return when(getStorage()) {
-            SHARED_STORAGE_ID -> getSharedList()
-            else -> getAppList()
+            SHARED_STORAGE_ID -> getSharedList(dateDescending)
+            else -> getAppList(dateDescending)
         }
     }
 
